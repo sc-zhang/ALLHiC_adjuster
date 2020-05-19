@@ -44,7 +44,7 @@ split_tour.py groupX.tour tig_X1,tigX2
 # reverse tour
 reverse_tour.py groupX.tour
 # merge tours
-merge_tour.py groupX_1.tour,groupX_2.tour group.X.tour
+merge_tour.py groupX_1.tour,groupX_2.tour groupX.tour
 
 ```
 
