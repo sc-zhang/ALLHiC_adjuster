@@ -2,7 +2,7 @@
 
 ALLHiC_adjuster is a toolset contain serval scripts for adjusting ALLHiC result.
 
-## Dependency
+## Dependencies
 
 ### Software
 
@@ -28,7 +28,7 @@ ConvertAnchors.py X.bed Y.bed X.Y.anchors X.Y.link
 GetBreakBlock.py X.Y.link 20 X.Y.blocks
 ```
 
-20 means 1/20 of chromosome's length, this is a threshold value that used for clustering contigs into different blocks
+20 means 1/20 of chromosome's length, this is a threshold value that used for clustering contigs into different blocks.
 
 ### Step 3. Draw dotplot
 
@@ -36,7 +36,7 @@ GetBreakBlock.py X.Y.link 20 X.Y.blocks
 DrawDotPlotColor.py X.Y.link X.Y.blocks groups.agp 20 X.Y.blocks.pdf
 ```
 
-20 is threshold that same as step 2.
+20 is the threshold that same as step 2.
 
 ### Step 4. Adjust
 
