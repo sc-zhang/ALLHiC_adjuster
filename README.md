@@ -34,7 +34,7 @@ DrawDotPlotColor.py X.Y.link X.Y.blocks groups.agp 20 X.Y.blocks.pdf
 
 **Step 4.** Adjust
 
-After step 3, you will get a pdf showed blocks with red line, and with the first and last contig id at both ends of line.
+After step 3, you will get a pdf showed blocks with red line, and with the first and last contig id at both ends of line and a file named *ctg_blocks.txt* with all contigs in different blocks. 
 
 Then, use scripts below to adjust tour files.
 
