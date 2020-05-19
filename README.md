@@ -50,7 +50,7 @@ merge_tour.py groupX_1.tour,groupX_2.tour group.X.tour
 
 ## Otherwise
 
-**ALLHiC_mono_allele_minimap.py** is a script for generating allele.table.txt with a haplotig
+**ALLHiC_mono_allele_minimap.py** is a script for generating allele.table.txt with a haplotype
 
 **convert_agp_to_tour.py** is a script for converting groups.agp to several tours
 
