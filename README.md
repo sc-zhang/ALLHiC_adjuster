@@ -1,6 +1,6 @@
 ## Introduction
 
-ALLHiC_adjuster is a toolset contain several scripts for adjusting ALLHiC result.
+ALLHiC_adjuster is a toolset contains several scripts for adjusting ALLHiC result.
 
 ## Dependencies
 
