@@ -1,6 +1,6 @@
 ## Introduction
 
-ALLHiC_adjuster is a toolset contain serval scripts for adjusting ALLHiC result.
+ALLHiC_adjuster is a toolset contain several scripts for adjusting ALLHiC result.
 
 ## Dependencies
 
