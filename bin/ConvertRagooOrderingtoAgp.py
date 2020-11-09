@@ -9,7 +9,7 @@ def convert_ord_to_agp(in_ord_dir, in_ctg, out_agp):
 	with open(in_ctg, 'r') as fin:
 		for line in fin:
 			if line[0] == '>':
-				id = line.strip()[1:]
+				id = line.strip().split()[0][1:]
 				chr_len_db[id] = 0
 			else:
 				chr_len_db[id] += len(line.strip())
