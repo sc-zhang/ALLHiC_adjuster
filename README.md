@@ -33,7 +33,7 @@ GetBreakBlock.py X.Y.link 20 X.Y.blocks
 ### Step 3. Draw dotplot
 
 ```bash
-DrawDotPlotColor.py X.Y.link X.Y.blocks groups.agp 20 X.Y.blocks.pdf
+DrawDotPlot.py X.Y.link X.Y.blocks groups.agp 20 X.Y.blocks.pdf
 ```
 
 20 is the threshold that same as step 2.
