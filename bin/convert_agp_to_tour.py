@@ -9,7 +9,7 @@ def convert_agp_to_tour(in_agp, out_dir):
 	with open(in_agp, 'r') as fin:
 		for line in fin:
 			data = line.strip().split()
-			if data[4] != 'W':
+			if len(line.strip()) == 0 or line[0] == '#' or data[4] != 'W':
 				continue
 			chrn = data[0]
 			tig = data[5]

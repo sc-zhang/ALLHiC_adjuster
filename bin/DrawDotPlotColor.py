@@ -16,7 +16,7 @@ def read_agp(in_agp):
 	with open(in_agp, 'r') as fin:
 		for line in fin:
 			data = line.strip().split()
-			if data[4] == 'U':
+			if len(line.strip()) == 0 or line[0] == '#' or data[4] == 'U':
 				continue
 			#chr_pre_x, index_x = re.findall(r'(\S.*?)(\d.*)', data[0])[0]
 			#chr_x = "%s%02d"%(chr_pre_x, int(index_x))
