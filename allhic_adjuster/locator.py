@@ -32,8 +32,10 @@ def convert_anchors(qry_bed, ref_bed, anc_file):
             sg = data[1]
             if qg not in qdb or sg not in sdb:
                 continue
-            qchr, qp, _ = qdb[qg]
-            schr, sp, _ = sdb[sg]
+            qchr, qsp, qep = qdb[qg]
+            qp = min(qsp, qep)
+            schr, ssp, sep = sdb[sg]
+            sp = min(ssp, sep)
             if qchr not in link_db:
                 link_db[qchr] = {}
             if schr not in link_db[qchr]:
@@ -213,7 +215,7 @@ def get_ctg_pos(region, pos):
         return -1
 
 
-def draw_dot_plot(link_list, block_db, in_agp, resolution, out_pic):
+def draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name, out_pic):
     """
     This function is used for visualising blocks
     Args:
@@ -226,7 +228,7 @@ def draw_dot_plot(link_list, block_db, in_agp, resolution, out_pic):
     """
     print("Reading data")
     chr_list_x, chr_list_y, data_db = convert_link(link_list)
-    agp_db = read_agp(in_agp)
+    agp_db = read_agp(agp_file)
     chr_len_db = {}
 
     print("Calculating chromosomes length")
@@ -278,7 +280,7 @@ def draw_dot_plot(link_list, block_db, in_agp, resolution, out_pic):
             for chry in chr_list_y:
                 if chrx not in block_db or chry not in block_db[chrx]:
                     continue
-                for x1, x2, y1, y2 in block_db[chrx][chry]:
+                for x1, y1, x2, y2 in block_db[chrx][chry]:
                     if euc_dist([x1, y1], [x2, y2]) * resolution / euc_dist([0, 0],
                                                                             [chr_len_db[chrx], chr_len_db[chry]]) < 1:
                         continue
@@ -334,14 +336,39 @@ def draw_dot_plot(link_list, block_db, in_agp, resolution, out_pic):
         base_y += chr_len_db[chry]
     plt.plot(data_x, data_y, linestyle='', color='black', marker='o', markersize=0.5)
 
+    offset_x = base_x*.02
+    offset_y = base_y*.02
     for i in range(0, len(block_x)):
-        plt.plot(block_x[i], block_y[i], linestyle='-', color='red', linewidth=0.5, markersize=0)
-        plt.annotate("%s" % label_x[i][0], xy=(block_x[i][0], block_y[i][0]), fontsize=2.5, color='red')
-        plt.annotate("%s" % label_x[i][1], xy=(block_x[i][1], block_y[i][1]), fontsize=2.5, color='red')
+        plt.plot(block_x[i], block_y[i], linestyle='-', color='orange', linewidth=0.5, markersize=0)
+        plt.annotate("%s" % label_x[i][0], xy=(block_x[i][0], block_y[i][0]),
+                     xytext=(block_x[i][0]-offset_x, block_y[i][0]+offset_y),
+                     arrowprops={
+                         'headwidth': 3,
+                         'headlength': 4,
+                         'width': 1,
+                         'facecolor': 'grey',
+                         'edgecolor': 'darkgrey',
+                         'shrink': 0.1,
+                     },
+                     fontsize=2.5, color='blue', ha='right')
+        plt.annotate("%s" % label_x[i][1], xy=(block_x[i][1], block_y[i][1]),
+                     xytext=(block_x[i][1]+offset_x, block_y[i][1]-offset_y),
+                     arrowprops={
+                         'headwidth': 3,
+                         'headlength': 4,
+                         'width': 1,
+                         'facecolor': 'grey',
+                         'edgecolor': 'darkgrey',
+                         'shrink': 0.1,
+                     },
+                     fontsize=2.5, color='red', ha='left')
     plt.xlim([0, max_x])
     plt.ylim([0, max_y])
     plt.xticks(x_ticks)
     plt.yticks(y_ticks)
+    plt.xlabel(qry_name)
+    plt.ylabel(ref_name)
+    plt.title("Visualization of blocks")
     ax = plt.gca()
     ax.set_xticklabels(x_labels, rotation=45)
     ax.set_yticklabels(y_labels, rotation=0)
@@ -368,7 +395,9 @@ def locator(args):
     print("Generating blocks")
     block_db = get_break_blocks(link_list, resolution)
 
+    qry_name = qry_bed.split('/')[-1].split('.')[0]
+    ref_name = ref_bed.split('/')[-1].split('.')[0]
     print("Plotting blocks")
-    draw_dot_plot(link_list, block_db, agp_file, resolution, out_pic)
+    draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name, out_pic)
 
     print("All finished")
