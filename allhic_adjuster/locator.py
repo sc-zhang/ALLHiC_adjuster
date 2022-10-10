@@ -2,8 +2,8 @@ from allhic_adjuster.base.file_reader import read_bed
 from allhic_adjuster.base.file_reader import read_agp
 from math import sqrt
 import matplotlib as mpl
-import matplotlib.pyplot as plt
 mpl.use('Agg')
+import matplotlib.pyplot as plt
 
 
 def convert_anchors(qry_bed, ref_bed, anc_file):
