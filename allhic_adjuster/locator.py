@@ -221,9 +221,11 @@ def draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name,
     Args:
         link_list: generate by convert_anchors
         block_db: generate by get_break_blocks
-        in_agp: input AGP file
+        agp_file: input AGP file
         resolution: the 1/resolution of chromosome length is the min distance to clust contigs same with the parameter
                     use in get_break_blocks
+        qry_name: name of query
+        ref_name: name of reference
         out_pic: output picture
     """
     print("Reading data")
@@ -351,6 +353,7 @@ def draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name,
     last_chry = ""
     base_x = 0
     base_y = 0
+    offset_y = 0
 
     for i in range(0, len(block_x)):
         cur_chrx, cur_chry = block_in_chr[i]
