@@ -5,6 +5,7 @@ def merge_tours(args):
     """
     This function is used for merging tour files and writing to single tour file
     """
+    print("Merging")
     tour_files = args.input
     out_tour = args.output
     tour_list = []
@@ -17,11 +18,14 @@ def merge_tours(args):
     with open(out_tour, 'w') as fout:
         fout.write(' '.join(tour_list))
 
+    print("Finisher")
+
 
 def reverse_tour(args):
     """
     This function is used for reversing single tour file, and the original one will be backup with '.bak' suffix
     """
+    print("Reversing")
     tour_file = args.input
     tour_lines = []
     with open(tour_file, 'r') as fin:
@@ -39,11 +43,14 @@ def reverse_tour(args):
     with open(tour_file, 'w') as fout:
         fout.write('\n'.join(tour_lines))
 
+    print("Finished")
+
 
 def split_group(grp_name, brk_ctgs):
     """
     This function is used for splitting group.txt with contigs
     """
+    print("Splitting with: %s" % brk_ctgs)
     with open(grp_name + '.tour', 'r') as fin:
         for line in fin:
             if line.strip() != '':
@@ -69,11 +76,14 @@ def split_group(grp_name, brk_ctgs):
             for ctg in ctg_grp[i]:
                 fout.write(ctg_db[ctg])
 
+    print("Finished")
+
 
 def split_tour(tour_file, brk_ctgs):
     """
     This function is used for splitting group.tour with contigs
     """
+    print("Splitting with: %s" % brk_ctgs)
     with open(tour_file, 'r') as fin:
         for line in fin:
             if line.strip() != '':
@@ -89,6 +99,8 @@ def split_tour(tour_file, brk_ctgs):
     for i in range(0, len(ctg_grp)):
         with open(tour_file[:-5] + "_" + str(i + 1) + ".tour", 'w') as fout:
             fout.write(' '.join(ctg_grp[i]))
+
+    print("Finished")
 
 
 def split_file(args):
