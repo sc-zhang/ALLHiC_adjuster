@@ -1,4 +1,14 @@
+"""
+This file contain several functions of file operate
+"""
+
+
 def read_bed(bed_file):
+    """
+    This function is used for reading bed file, and return a dictionary
+    key -> gene id
+    value -> a list contain: chromosome name, start position, end position
+    """
     bed_db = {}
     with open(bed_file, 'r') as fin:
         for line in fin:
@@ -14,6 +24,13 @@ def read_bed(bed_file):
 
 
 def read_agp(in_agp):
+    """
+    This function is used for reading AGP file, and return a dictionary
+    key -> chromosome id
+    value -> two dimensions list:
+            [[start position, end position, contig id, direction]
+            ...]
+    """
     agp_db = {}
     with open(in_agp, 'r') as fin:
         for line in fin:
@@ -29,3 +46,23 @@ def read_agp(in_agp):
                 agp_db[chr_x] = []
             agp_db[chr_x].append([sp, ep, ctg, direct])
     return agp_db
+
+
+def read_fasta(in_fasta):
+    """
+    This function is used for reading fasta file, and return a dictionary
+    key -> chromosome id
+    value -> sequence
+    """
+    seq_db = {}
+    with open(in_fasta, 'r') as fin:
+        for line in fin:
+            if line[0] == '>':
+                sid = line.strip().split()[0][1:]
+                seq_db[sid] = []
+            else:
+                seq_db[sid].append(line.strip())
+    for sid in seq_db:
+        seq_db[sid] = ''.join(seq_db[sid])
+
+    return seq_db

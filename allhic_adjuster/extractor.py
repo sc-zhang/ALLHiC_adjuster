@@ -1,18 +1,13 @@
 from os import path, makedirs, listdir
+from allhic_adjuster.base.file_reader import read_fasta
 
 
 def extract_ctg_with_tour(in_tour, in_ctg_fasta, out_fasta):
+    """
+    This function is used for extracting contig sequences with tour file
+    """
     print("Loading contig fasta")
-    ctg_db = {}
-    with open(in_ctg_fasta, 'r') as fin:
-        for line in fin:
-            if line[0] == '>':
-                sid = line.strip().split()[0][1:]
-                ctg_db[sid] = []
-            else:
-                ctg_db[sid].append(line.strip())
-    for sid in ctg_db:
-        ctg_db[sid] = ''.join(ctg_db[sid])
+    ctg_db = read_fasta(in_ctg_fasta)
 
     print("Extracting")
     with open(in_tour, 'r') as fin:
@@ -28,20 +23,14 @@ def extract_ctg_with_tour(in_tour, in_ctg_fasta, out_fasta):
 
 
 def extract_ctg_with_tours(in_tour_dir, in_ctg_fasta, out_dir):
+    """
+    This function is used for extracting contig sequences with tour files
+    """
     if not path.exists(out_dir):
         makedirs(out_dir)
     print("Loading contig fasta")
-    ctg_db = {}
-    with open(in_ctg_fasta, 'r') as fin:
-        for line in fin:
-            if line[0] == '>':
-                sid = line.strip().split()[0][1:]
-                ctg_db[sid] = []
-            else:
-                ctg_db[sid].append(line.strip())
-    for sid in ctg_db:
-        ctg_db[sid] = ''.join(ctg_db[sid])
-    used_ctg_id = {}
+    ctg_db = read_fasta(in_ctg_fasta)
+    used_ctg_id = set()
 
     print("Extracting")
     for fn in listdir(in_tour_dir):
@@ -59,8 +48,9 @@ def extract_ctg_with_tours(in_tour_dir, in_ctg_fasta, out_dir):
                 data = line.strip().split()
 
                 for tig in data:
-                    used_ctg_id[tig] = 1
+                    used_ctg_id.add(tig)
                     fout.write(">%s\n%s\n" % (tig[:-1], ctg_db[tig[:-1]]))
+
     with open(path.join(out_dir, 'unanchored.fasta'), 'w') as fout:
         for tig in sorted(ctg_db):
             if tig not in used_ctg_id:
@@ -69,19 +59,14 @@ def extract_ctg_with_tours(in_tour_dir, in_ctg_fasta, out_dir):
     print("Finished")
 
 
-def extract_seq_with_list(in_fa, in_list, out_fa):
-    fa_db = {}
-    with open(in_fa, 'r') as fin:
-        for line in fin:
-            if line[0] == '>':
-                sid = line.strip()[1:]
-                fa_db[sid] = []
-            else:
-                fa_db[sid].append(line.strip())
+def extract_seq_in_list(in_fa, in_list, out_fa):
+    """
+    This function is used for extracting contig sequences which id in list file
+    """
+    print("Loading fasta")
+    fa_db = read_fasta(in_fa)
 
-    for sid in fa_db:
-        fa_db[sid] = ''.join(fa_db[sid])
-
+    print("Extracting")
     with open(in_list, 'r') as fin:
         with open(out_fa, 'w') as fout:
             for line in fin:
@@ -91,34 +76,37 @@ def extract_seq_with_list(in_fa, in_list, out_fa):
                     tig = line.strip().split()[0]
                     fout.write(">%s\n%s\n" % (tig, fa_db[tig]))
 
+    print("Finished")
 
-def extract_seq_without_list(in_fa, in_list, out_fa):
-    fa_db = {}
-    with open(in_fa, 'r') as fin:
-        for line in fin:
-            if line[0] == '>':
-                sid = line.strip()[1:]
-                fa_db[sid] = []
-            else:
-                fa_db[sid].append(line.strip())
 
-    for sid in fa_db:
-        fa_db[sid] = ''.join(fa_db[sid])
+def extract_seq_not_in_list(in_fa, in_list, out_fa):
+    """
+    This function is used for extracting contig sequences which id not in list file
+    """
+    print("Loading fasta")
+    fa_db = read_fasta(in_fa)
 
+    print("Loading list")
+    id_set = set()
     with open(in_list, 'r') as fin:
-        list_db = {}
         for line in fin:
             if line[0] == '#':
                 continue
-            list_db[line.strip().split()[0]] = 1
+            id_set.add(line.strip().split()[0])
 
+    print("Extracting")
     with open(out_fa, 'w') as fout:
         for tig in fa_db:
-            if tig not in list_db:
+            if tig not in id_set:
                 fout.write(">%s\n%s\n" % (tig, fa_db[tig]))
+
+    print("Finished")
 
 
 def extract_by_tour(args):
+    """
+    This function is used for extracting contig sequences with tour file or tour files
+    """
     in_file = args.input
     seq_file = args.fasta
     out_file = args.output
@@ -129,11 +117,14 @@ def extract_by_tour(args):
 
 
 def extract_by_list(args):
+    """
+    This function is used for extracting contig sequences which id in or not in list file
+    """
     in_file = args.input
     in_list = args.list
-    without = args.without
+    is_not_in = args.not_in
     out_file = args.output
-    if not without:
-        extract_seq_with_list(in_file, in_list, out_file)
+    if not is_not_in:
+        extract_seq_in_list(in_file, in_list, out_file)
     else:
-        extract_seq_without_list(in_file, in_list, out_file)
+        extract_seq_not_in_list(in_file, in_list, out_file)

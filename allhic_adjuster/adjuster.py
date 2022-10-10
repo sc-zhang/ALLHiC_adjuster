@@ -2,6 +2,9 @@ from shutil import copy
 
 
 def merge_tours(args):
+    """
+    This function is used for merging tour files and writing to single tour file
+    """
     tour_files = args.input
     out_tour = args.output
     tour_list = []
@@ -16,6 +19,9 @@ def merge_tours(args):
 
 
 def reverse_tour(args):
+    """
+    This function is used for reversing single tour file, and the original one will be backup with '.bak' suffix
+    """
     tour_file = args.input
     tour_lines = []
     with open(tour_file, 'r') as fin:
@@ -35,6 +41,9 @@ def reverse_tour(args):
 
 
 def split_group(grp_name, brk_ctgs):
+    """
+    This function is used for splitting group.txt with contigs
+    """
     with open(grp_name + '.tour', 'r') as fin:
         for line in fin:
             if line.strip() != '':
@@ -62,6 +71,9 @@ def split_group(grp_name, brk_ctgs):
 
 
 def split_tour(tour_file, brk_ctgs):
+    """
+    This function is used for splitting group.tour with contigs
+    """
     with open(tour_file, 'r') as fin:
         for line in fin:
             if line.strip() != '':
@@ -80,6 +92,9 @@ def split_tour(tour_file, brk_ctgs):
 
 
 def split_file(args):
+    """
+    This function is used for splitting group.txt or group.tour with contigs
+    """
     in_file = args.input
     brk_ctgs = args.contigs
     if in_file.endswith('.tour'):
