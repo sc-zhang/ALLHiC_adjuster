@@ -32,8 +32,8 @@ def convert_anchors(qry_bed, ref_bed, anc_file):
             sg = data[1]
             if qg not in qdb or sg not in sdb:
                 continue
-            qchr, qp = qdb[qg]
-            schr, sp = sdb[sg]
+            qchr, qp, _ = qdb[qg]
+            schr, sp, _ = sdb[sg]
             if qchr not in link_db:
                 link_db[qchr] = {}
             if schr not in link_db[qchr]:
