@@ -364,7 +364,7 @@ def draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name,
             last_chrx = cur_chrx
             last_chry = cur_chry
             block_cnt = chr_block_cnt[cur_chry]
-            offset_y = chr_len_db[cur_chry]*.8/block_cnt
+            offset_y = chr_len_db[cur_chry]*.9/block_cnt
 
         idx += 1
 
