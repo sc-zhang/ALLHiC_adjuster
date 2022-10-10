@@ -274,6 +274,10 @@ def draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name,
     out_block = out_pic.split('.')
     out_block[-1] = 'block.txt'
     out_block = '.'.join(out_block)
+    chr_block_cnt = {}
+    block_in_chr = {}
+    idx = 0
+
     with open(out_block, 'w') as fout:
         ctg_block_db = {}
         for chrx in chr_list_x:
@@ -281,9 +285,16 @@ def draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name,
                 if chrx not in block_db or chry not in block_db[chrx]:
                     continue
                 for x1, y1, x2, y2 in block_db[chrx][chry]:
-                    if euc_dist([x1, y1], [x2, y2]) * resolution / euc_dist([0, 0],
-                                                                            [chr_len_db[chrx], chr_len_db[chry]]) < 1:
+                    if euc_dist([x1, y1], [x2, y2]) * 1. * resolution / \
+                            euc_dist([0, 0], [chr_len_db[chrx], chr_len_db[chry]]) < 1:
                         continue
+
+                    block_in_chr[idx] = [chrx, chry]
+                    idx += 1
+                    if chry not in chr_block_cnt:
+                        chr_block_cnt[chry] = 0
+                    chr_block_cnt[chry] += 1
+
                     block_x.append([x1 + offset_db[chrx], x2 + offset_db[chrx]])
                     rstart = get_ctg_pos(agp_db[chrx], x1)
                     rend = get_ctg_pos(agp_db[chrx], x2)
@@ -336,32 +347,44 @@ def draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name,
         base_y += chr_len_db[chry]
     plt.plot(data_x, data_y, linestyle='', color='black', marker='o', markersize=0.5)
 
-    offset_x = base_x*.02
-    offset_y = base_y*.02
+    last_chrx = ""
+    last_chry = ""
+    base_x = 0
+    base_y = 0
+
     for i in range(0, len(block_x)):
+        cur_chrx, cur_chry = block_in_chr[i]
+        if cur_chrx != last_chry:
+            if last_chrx != "":
+                base_x += chr_len_db[last_chrx]
+            if last_chry != "":
+                base_y += chr_len_db[last_chry]
+
+            idx = 0
+            last_chrx = cur_chrx
+            last_chry = cur_chry
+            block_cnt = chr_block_cnt[cur_chry]
+            offset_y = chr_len_db[cur_chry]*.8/block_cnt
+
+        idx += 1
+
+        block_pos = [(block_x[i][0]+block_x[i][1])/2.0, (block_y[i][0]+block_y[i][1])/2.0]
+        text_pos = [base_x, base_y+offset_y*idx]
+
         plt.plot(block_x[i], block_y[i], linestyle='-', color='orange', linewidth=0.5, markersize=0)
-        plt.annotate("%s" % label_x[i][0], xy=(block_x[i][0], block_y[i][0]),
-                     xytext=(block_x[i][0]-offset_x, block_y[i][0]+offset_y),
+        plt.annotate("Start: %s, End: %s" % (label_x[i][0], label_x[i][1]),
+                     xy=block_pos,
+                     xytext=text_pos,
                      arrowprops={
                          'headwidth': 3,
                          'headlength': 4,
+                         'linewidth': 0,
                          'width': 1,
                          'facecolor': 'grey',
-                         'edgecolor': 'darkgrey',
-                         'shrink': 0.1,
+                         'shrink': 0.05,
                      },
-                     fontsize=2.5, color='blue', ha='right')
-        plt.annotate("%s" % label_x[i][1], xy=(block_x[i][1], block_y[i][1]),
-                     xytext=(block_x[i][1]+offset_x, block_y[i][1]-offset_y),
-                     arrowprops={
-                         'headwidth': 3,
-                         'headlength': 4,
-                         'width': 1,
-                         'facecolor': 'grey',
-                         'edgecolor': 'darkgrey',
-                         'shrink': 0.1,
-                     },
-                     fontsize=2.5, color='red', ha='left')
+                     fontsize=2.5, color='orangered', ha='right')
+
     plt.xlim([0, max_x])
     plt.ylim([0, max_y])
     plt.xticks(x_ticks)
