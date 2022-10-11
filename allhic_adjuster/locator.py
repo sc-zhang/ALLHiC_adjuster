@@ -276,7 +276,7 @@ def draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name,
     out_block = out_pic.split('.')
     out_block[-1] = 'block.txt'
     out_block = '.'.join(out_block)
-    chr_block_cnt = {}
+    chry_block_cnt = {}
     block_in_chr = {}
     idx = 0
 
@@ -293,9 +293,9 @@ def draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name,
 
                     block_in_chr[idx] = [chrx, chry]
                     idx += 1
-                    if chry not in chr_block_cnt:
-                        chr_block_cnt[chry] = 0
-                    chr_block_cnt[chry] += 1
+                    if chry not in chry_block_cnt:
+                        chry_block_cnt[chry] = 0
+                    chry_block_cnt[chry] += 1
 
                     block_x.append([x1 + offset_db[chrx], x2 + offset_db[chrx]])
                     rstart = get_ctg_pos(agp_db[chrx], x1)
@@ -331,48 +331,54 @@ def draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name,
     x_ticks = []
     x_labels = []
     base_x = 0
+    chrx_idx_db = {}
+    idx = 0
+    offset_x_list = []
+
     for chrx in chr_list_x:
+        offset_x_list.append(base_x)
+        chrx_idx_db[chrx] = idx
+        idx += 1
         plt.plot([chr_len_db[chrx] + base_x, chr_len_db[chrx] + base_x], [0, max_y], linestyle='-', color='green',
                  linewidth=0.5, markersize=0)
         x_ticks.append(base_x + int(chr_len_db[chrx] / 2))
         x_labels.append(chrx)
         base_x += chr_len_db[chrx]
+    offset_x_list.append(base_x)
 
     y_ticks = []
     y_labels = []
     base_y = 0
+    chry_idx_db = {}
+    idx = 0
+    offset_y_list = []
+
     for chry in chr_list_y:
+        offset_y_list.append(base_y)
+        chry_idx_db[chry] = idx
+        idx += 1
         plt.plot([0, max_x], [chr_len_db[chry] + base_y, chr_len_db[chry] + base_y], linestyle='-', color='green',
                  linewidth=0.5, markersize=0)
         y_ticks.append(base_y + int(chr_len_db[chry] / 2))
         y_labels.append(chry)
         base_y += chr_len_db[chry]
-    plt.plot(data_x, data_y, linestyle='', color='black', marker='o', markersize=0.5)
+    offset_y_list.append(base_y)
 
-    last_chrx = ""
-    last_chry = ""
-    base_x = 0
-    base_y = 0
-    offset_y = 0
+    plt.plot(data_x, data_y, linestyle='', color='black', marker='o', markersize=0.5)
+    block_offset_db = {}
 
     for i in range(0, len(block_x)):
         cur_chrx, cur_chry = block_in_chr[i]
-        if cur_chrx != last_chry:
-            if last_chrx != "":
-                base_x += chr_len_db[last_chrx]
-            if last_chry != "":
-                base_y += chr_len_db[last_chry]
+        if cur_chry not in block_offset_db:
+            block_offset_db[cur_chry] = 0
+        block_offset_db[cur_chry] += 1
 
-            idx = 0
-            last_chrx = cur_chrx
-            last_chry = cur_chry
-            block_cnt = chr_block_cnt[cur_chry]
-            offset_y = chr_len_db[cur_chry]*.9/block_cnt
-
-        idx += 1
+        base_x = offset_x_list[chrx_idx_db[cur_chrx]]
+        base_y = offset_y_list[chry_idx_db[cur_chry]]
+        offset_y = chr_len_db[cur_chry]*0.9/chry_block_cnt[cur_chry]
 
         block_pos = [(block_x[i][0]+block_x[i][1])/2.0, (block_y[i][0]+block_y[i][1])/2.0]
-        text_pos = [base_x, base_y+offset_y*idx]
+        text_pos = [base_x, base_y+offset_y*(block_offset_db[cur_chry])]
 
         plt.plot(block_x[i], block_y[i], linestyle='-', color='orange', linewidth=0.5, markersize=0)
         plt.annotate("Start: %s, End: %s" % (label_x[i][0], label_x[i][1]),
