@@ -14,6 +14,17 @@ ALLHiC_adjuster is a toolset contains several scripts for adjusting ALLHiC resul
 
 matplotlib
 
+## Installation
+
+
+```bash
+cd /path/to/install
+git clone https://github.com/sc-zhang/ALLHiC_adjuster.git
+pip install -r requirements.txt
+chmod +x ALLHiC_adjuster/ALLHiC_adjuster.py
+echo 'export PATH=/path/to/install/ALLHiC_adjuster:$PATH' >> ~/.bash_profile
+source ~/.bash_profile
+```
 ## Usage
 
 ### Step 1. Locate each contig block with jcvi anchors
