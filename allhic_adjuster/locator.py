@@ -1,9 +1,9 @@
-from allhic_adjuster.base.file_reader import read_bed
-from allhic_adjuster.base.file_reader import read_agp
+from allhic_adjuster.base.file_reader import read_bed, read_agp
 from math import sqrt
 import matplotlib as mpl
-mpl.use('Agg')
 import matplotlib.pyplot as plt
+
+mpl.use('Agg')
 
 
 def convert_anchors(qry_bed, ref_bed, anc_file):
@@ -375,10 +375,10 @@ def draw_dot_plot(link_list, block_db, agp_file, resolution, qry_name, ref_name,
 
         base_x = offset_x_list[chrx_idx_db[cur_chrx]]
         base_y = offset_y_list[chry_idx_db[cur_chry]]
-        offset_y = chr_len_db[cur_chry]*0.9/chry_block_cnt[cur_chry]
+        offset_y = chr_len_db[cur_chry] * 0.9 / chry_block_cnt[cur_chry]
 
-        block_pos = [(block_x[i][0]+block_x[i][1])/2.0, (block_y[i][0]+block_y[i][1])/2.0]
-        text_pos = [base_x, base_y+offset_y*(block_offset_db[cur_chry])]
+        block_pos = [(block_x[i][0] + block_x[i][1]) / 2.0, (block_y[i][0] + block_y[i][1]) / 2.0]
+        text_pos = [base_x, base_y + offset_y * (block_offset_db[cur_chry])]
 
         plt.plot(block_x[i], block_y[i], linestyle='-', color='orange', linewidth=0.5, markersize=0)
         plt.annotate("Start: %s, End: %s" % (label_x[i][0], label_x[i][1]),
