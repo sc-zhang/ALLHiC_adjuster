@@ -1,3 +1,5 @@
+import gzip
+
 """
 This file contain several functions of file operate
 """
@@ -55,13 +57,14 @@ def read_fasta(in_fasta):
     value -> sequence
     """
     seq_db = {}
-    with open(in_fasta, 'r') as fin:
-        for line in fin:
-            if line[0] == '>':
-                sid = line.strip().split()[0][1:]
-                seq_db[sid] = []
-            else:
-                seq_db[sid].append(line.strip())
+    fin = gzip.open(in_fasta, 'rt') if in_fasta.endswith('.gz') else open(in_fasta, 'r')
+    for line in fin:
+        if line[0] == '>':
+            sid = line.strip().split()[0][1:]
+            seq_db[sid] = []
+        else:
+            seq_db[sid].append(line.strip())
+    fin.close()
     for sid in seq_db:
         seq_db[sid] = ''.join(seq_db[sid])
 
