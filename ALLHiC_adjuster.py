@@ -45,7 +45,8 @@ def main():
     parser_convertor_subparsers = parser_convertor.add_subparsers(title='convertor commands')
 
     # convert agp to tours
-    parser_convertor_agp2tour = parser_convertor_subparsers.add_parser('agp2tour', help='Convert AGP file to tour files')
+    parser_convertor_agp2tour = parser_convertor_subparsers.add_parser('agp2tour',
+                                                                       help='Convert AGP file to tour files')
     parser_convertor_agp2tour.add_argument('-a', '--agp', help='Input AGP file', required=True)
     parser_convertor_agp2tour.add_argument('-o', '--outdir', help='Output directory', required=True)
     parser_convertor_agp2tour.set_defaults(func=allhic_adjuster.converter.agp2tour)
@@ -59,7 +60,7 @@ def main():
 
     # convert tours to cluster
     parser_convertor_tours2cluster = parser_convertor_subparsers.add_parser('tours2cluster', help='Convert tour files '
-                                                                            'to cluster file')
+                                                                                                  'to cluster file')
     parser_convertor_tours2cluster.add_argument('-i', '--input', help='Input tour directory', required=True)
     parser_convertor_tours2cluster.add_argument('-o', '--output', help='Output cluster file', required=True)
     parser_convertor_tours2cluster.set_defaults(func=allhic_adjuster.converter.tours2cluster)
@@ -83,7 +84,7 @@ def main():
 
     # convert RaGOO ordering files to AGP file
     parser_convertor_ragoo2agp = parser_convertor_subparsers.add_parser('ragoo2agp', help='Convert RaGOO ordering '
-                                                                        'files to AGP file')
+                                                                                          'files to AGP file')
     parser_convertor_ragoo2agp.add_argument('-i', '--input', help='Input directory of ordering files', required=True)
     parser_convertor_ragoo2agp.add_argument('-f', '--fasta', help='Input contig fasta file', required=True)
     parser_convertor_ragoo2agp.add_argument('-o', '--output', help='Output AGP file', required=True)
@@ -118,7 +119,15 @@ def main():
     parser_adjuster_split.add_argument('-i', '--input', help='Input tour file or group name', required=True)
     parser_adjuster_split.add_argument('-c', '--contigs', help='Breakpoint contigs, separated by comma', required=True)
     parser_adjuster_split.set_defaults(func=allhic_adjuster.adjuster.split_file)
-    
+
+    parser_builder = subparsers.add_parser('builder', help="Build chromosome-level fasta from tour files")
+    parser_builder.add_argument("-r", "--ref", help="Input contig-level fasta file", required=True)
+    parser_builder.add_argument("-i", "--input", help="Input directory contain all required tour files", required=True)
+    parser_builder.add_argument("-o", "--output",
+                                help="Output directory of groups.asm.fasta file and groups.agp file, default='.'",
+                                default=".")
+
+    parser_builder.set_defaults(func=allhic_adjuster.builder.builder)
     try:
         args = parser.parse_args()
         args.func(args)
