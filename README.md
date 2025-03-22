@@ -16,7 +16,6 @@ matplotlib
 
 ## Installation
 
-
 ```bash
 cd /path/to/install
 git clone https://github.com/sc-zhang/ALLHiC_adjuster.git
@@ -25,9 +24,28 @@ chmod +x ALLHiC_adjuster/ALLHiC_adjuster.py
 echo 'export PATH=/path/to/install/ALLHiC_adjuster:$PATH' >> ~/.bash_profile
 source ~/.bash_profile
 ```
+
 ## Usage
 
+### Main program
+
+```bash
+usage: ALLHiC_adjuster.py [-h] {locator,extractor,convertor,adjuster,builder} ...
+
+options:
+  -h, --help            show this help message and exit
+
+sub commands:
+  {locator,extractor,convertor,adjuster,builder}
+    locator             Visualize each block of chromosome
+    extractor           Extract sequences
+    convertor           Convert files
+    adjuster            Adjust tour or group files
+    builder             Build chromosome-level fasta from tour files
+```
+
 ### Step 1. Locate each contig block with jcvi anchors
+
 ```bash
 usage: ALLHiC_adjuster.py locator [-h] -q QUERY -r REFERENCE -c ANCHORS -a AGP [-s RESOLUTION] -o OUTPIC
 
@@ -52,7 +70,7 @@ Example:
 ALLHiC_adjuster.py locator -q query.bed -r reference.bed -c query.reference.anchors -a query.agp -s 100
 ```
 
-The picture will figure out each block, and show start contig and end contig of each block, and a .block.txt file with 
+The picture will figure out each block, and show start contig and end contig of each block, and a .block.txt file with
 same name with picture will save contig list in each block.
 
 ### Step 2. Adjust
@@ -70,7 +88,7 @@ Adjuster commands:
     split               Split tour file or txt file
 ```
 
-This three sub commands of adjuster sub command can be use with tour files, for detail, you can use commands below for 
+This three sub commands of adjuster sub command can be use with tour files, for detail, you can use commands below for
 more help
 
 ```bash
@@ -94,13 +112,19 @@ ALLHiC_adjuster.py adjuster split -i <groupX.tour> -c <contig1,contig2>
 
 ### Step 3. Build
 
-Make sure the folder for building only contain necessary .tour files then run:
+Make sure the folder for input only contain necessary .tour files then run:
 
 ```bash
-ALLHiC_build <draft.asm.fasta>
-```
+usage: ALLHiC_adjuster.py builder [-h] -r REF -i INPUT [-o OUTPUT]
 
-draft.asm.fasta is contig-level assmbly
+options:
+  -h, --help            show this help message and exit
+  -r REF, --ref REF     Input contig-level fasta file
+  -i INPUT, --input INPUT
+                        Input directory contain all required tour files
+  -o OUTPUT, --output OUTPUT
+                        Output directory of groups.asm.fasta file and groups.agp file, default='.'
+```
 
 ## Otherwise
 
@@ -138,6 +162,7 @@ convertor commands:
 ```
 
 For more information, use command below:
+
 ```bash
 ALLHiC_adjuster.py subcommand1 -h
 ALLHiC_adjuster.py subcommand1 subcommand2 -h
